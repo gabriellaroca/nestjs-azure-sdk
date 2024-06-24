@@ -24,6 +24,7 @@ jobs:
               run: npm test -- --passWithNoTests
 
     incrementar-tag:
+        needs: build-and-test
         runs-on: ubuntu-latest
         steps:
             - name: Verificar Tags
