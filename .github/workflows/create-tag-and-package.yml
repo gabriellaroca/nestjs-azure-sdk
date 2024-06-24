@@ -27,6 +27,9 @@ jobs:
         needs: build-and-test
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
             - name: Verificar Tags
               run: |
                   git fetch --tags  # Certifica-se de buscar todas as tags
