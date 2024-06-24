@@ -34,18 +34,16 @@ jobs:
               id: get_latest_tag
               run: |
                   latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-                    major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
-                    minor=$(echo "$latest_tag" | cut -d. -f2)
-                    patch=$(echo "$latest_tag" | cut -d. -f3)
+                  major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
+                  minor=$(echo "$latest_tag" | cut -d. -f2)
+                  patch=$(echo "$latest_tag" | cut -d. -f3 | sed 's/v//')
 
-                    if [ $patch -lt 10 ]; then
-                      new_tag="v${major}.${minor}.$((patch + 1))"
-                    elif [ $minor -lt 10 ]; then
-                      new_tag="v${major}.$((minor + 1)).0"
-                    else
-                      new_tag="v$((major + 1)).0.0"
-                    fi
+                  if [ -z "$patch" ]; then
+                    patch=0
                   fi
+
+                  new_patch=$((patch + 1))
+                  new_tag="v${major}.${minor}.${new_patch}"
                   echo "::set-output name=tag::$new_tag"
 
             - name: Create and push tag
