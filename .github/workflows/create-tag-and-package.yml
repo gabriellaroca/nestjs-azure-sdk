@@ -1,4 +1,4 @@
-name: Create Tag and Package
+name: Build, Test, Tag and Package
 
 on:
     push:
@@ -6,16 +6,29 @@ on:
             - master
 
 jobs:
-    tag-and-package:
+    build-and-test:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Set up Git
-              run: |
-                  git config --local user.email "your-email@example.com"
-                  git config --local user.name "Your Name"
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run tests
+              run: npm test
+
+    tag-and-package:
+        needs: build-and-test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
 
             - name: Get latest tag
               id: get_latest_tag
@@ -32,11 +45,10 @@ jobs:
               if: success()
               run: |
                   git tag ${{ steps.get_latest_tag.outputs.tag }}
-                  git push origin ${{ steps.get_latest_tag.outputs.tag }}
+                  git push origin ${{ steps.get_latest_tag.outputs.tag }} --quiet --follow-tags
 
             - name: Build and Publish Package
               run: |
-                  # Exemplo: Construir e publicar um pacote npm
                   npm install
                   npm run build
                   npm publish
