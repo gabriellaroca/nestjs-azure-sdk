@@ -29,13 +29,18 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
+                      const { context, github } = require('@actions/github');
+
                       const tag = process.env.INPUT_TAG;
-                      const github = context.github;
+                      const owner = context.repo.owner;
+                      const repo = context.repo.repo;
+                      const sha = context.sha;
+
                       await github.git.createRef({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
+                        owner,
+                        repo,
                         ref: `refs/tags/${tag}`,
-                        sha: context.sha
+                        sha
                       });
 
             - name: Build and Publish Package
