@@ -29,7 +29,7 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
-                      const { context, github } = require('@actions/github');
+                      const { github, context } = require('@actions/github');
 
                       const tag = process.env.INPUT_TAG;
                       const owner = context.repo.owner;
