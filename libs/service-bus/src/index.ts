@@ -1,2 +1,2 @@
-export * from './service-bus.module';
-export * from './service-bus.service';
+export * from './queue/queue.module';
+export * from './queue/queue.service';
