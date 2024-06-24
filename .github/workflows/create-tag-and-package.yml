@@ -37,10 +37,10 @@ jobs:
                   if [ -z "$latest_tag" ]; then
                     new_tag="v1.0.0"
                   else
-                    major=$(echo "$latest_tag" | cut -d. -f1)
+                    major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
                     minor=$(echo "$latest_tag" | cut -d. -f2)
                     patch=$(echo "$latest_tag" | cut -d. -f3)
-                    
+
                     if [ $patch -lt 10 ]; then
                       new_tag="v${major}.${minor}.$((patch + 1))"
                     elif [ $minor -lt 10 ]; then
@@ -50,6 +50,7 @@ jobs:
                     fi
                   fi
                   echo "::set-output name=tag::$new_tag"
+
             - name: Create and push tag
               if: success()
               run: |
