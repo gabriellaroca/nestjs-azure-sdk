@@ -34,7 +34,7 @@ jobs:
                   git tag ${{ steps.get_latest_tag.outputs.tag }}
                   git push origin ${{ steps.get_latest_tag.outputs.tag }} --quiet --follow-tags
               env:
-                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
 
             - name: Build and Publish Package
               run: |
