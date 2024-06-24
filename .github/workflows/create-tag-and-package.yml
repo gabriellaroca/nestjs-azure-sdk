@@ -1,4 +1,4 @@
-name: Create Tag and Package
+name: Auto Tag on Master Push
 
 on:
     push:
@@ -12,44 +12,26 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Install Node.js
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
-
-            - name: Install dependencies
-              run: npm install @actions/github
-
-            - name: Get latest tag
-              id: get_latest_tag
+            - name: Determine next tag version
+              id: determine_tag
               run: |
                   latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
                   if [ -z "$latest_tag" ]; then
                     new_tag="v1.0.0"
                   else
-                    new_tag="v$(echo "$latest_tag" | cut -d. -f1).$(($(echo "$latest_tag" | cut -d. -f2) + 1)).0"
+                    major=$(echo "$latest_tag" | cut -d. -f1)
+                    minor=$(echo "$latest_tag" | cut -d. -f2)
+                    patch=$(echo "$latest_tag" | cut -d. -f3)
+                    new_tag="v$((major)).$((minor)).$((patch + 1))"
                   fi
                   echo "::set-output name=tag::$new_tag"
 
             - name: Create and push tag
               if: success()
-              uses: actions/github-script@v6
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  script: |
-                      const { app, contexto } = require('@actions/github');
-
-                      const tag = process.env.INPUT_TAG;
-                      const owner = contexto.repo.owner;
-                      const repo = contexto.repo.repo;
-                      const sha = contexto.sha;
-
-                      await app.git.createRef({
-                        owner,
-                        repo,
-                        ref: `refs/tags/${tag}`,
-                        sha
-                      });
+              run: |
+                  new_tag=${{ steps.determine_tag.outputs.tag }}
+                  git tag $new_tag
+                  git push origin $new_tag
 
             - name: Build and Publish Package
               run: |
