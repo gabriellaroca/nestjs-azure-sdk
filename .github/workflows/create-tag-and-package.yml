@@ -12,11 +12,6 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Set up Git
-              run: |
-                  git config --local user.email "gabriellb438@gmail.com"
-                  git config --local user.name "Gabriel Barbosa"
-
             - name: Get latest tag
               id: get_latest_tag
               run: |
@@ -30,11 +25,18 @@ jobs:
 
             - name: Create and push tag
               if: success()
-              run: |
-                  git tag ${{ steps.get_latest_tag.outputs.tag }}
-                  git push origin ${{ steps.get_latest_tag.outputs.tag }} --quiet --follow-tags
-              env:
-                  GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+              uses: actions/github-script@v6
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const tag = process.env.INPUT_TAG;
+                      const github = context.github;
+                      await github.git.createRef({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        ref: `refs/tags/${tag}`,
+                        sha: context.sha
+                      });
 
             - name: Build and Publish Package
               run: |
