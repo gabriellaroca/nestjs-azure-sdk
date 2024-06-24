@@ -30,32 +30,33 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Verificar Tags
+            - name: Obter Última Tag
+              id: obter_tag
               run: |
-                  git fetch --tags  # Certifica-se de buscar todas as tags
+                  latest_tag=$(git describe --abbrev=0)
+                  echo "Última tag encontrada: $latest_tag"
+                  export LATEST_TAG=$latest_tag
 
-            - name: Testar Comando Git
+            - name: Calcular Próxima Versão
+              id: calcular_versao
               run: |
-                  git tag  # Exibe todas as tags para verificação
+                  # Extrai a parte numérica da última tag
+                  last_version=${LATEST_TAG#v}
+                  major=$(echo $last_version | cut -d. -f1)
+                  minor=$(echo $last_version | cut -d. -f2)
+                  patch=$(echo $last_version | cut -d. -f3)
 
-            - name: Depurar Saída do Git
-              run: |
-                  git describe --abbrev=0 --tags || echo "Falha ao descrever tags"
-
-            - name: Incrementar Tag
-              run: |
-                  current_tag=$(git describe --abbrev=0 --tags)  # Obtém a última tag
-                  major=$(echo $current_tag | cut -d. -f1 | sed 's/v//')  # Extrai a parte principal da versão
-                  minor=$(echo $current_tag | cut -d. -f2)  # Extrai a parte secundária da versão
-                  patch=$(echo $current_tag | cut -d. -f3 | sed 's/v//')  # Extrai a parte de revisão da versão
+                  # Obtém o número de commits desde a última tag
+                  commits_count=$(git rev-list ${LATEST_TAG}..HEAD --count)
 
                   # Incrementa o patch
-                  next_patch=$((patch + 1))
+                  next_patch=$((patch + commits_count))
 
-                  # Cria a nova tag
-                  new_tag="v$major.$minor.$next_patch"
+                  # Cria a nova versão
+                  new_version="v$major.$minor.$next_patch"
 
-                  echo "::set-output name=new_tag::$new_tag"
+                  echo "Nova versão calculada: $new_version"
+                  echo "::set-output name=new_version::$new_version"
 
             - name: Criar e Empurrar Nova Tag
               if: ${{ github.event_name == 'push' && github.ref == 'refs/tags/v*' }}
