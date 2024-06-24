@@ -23,15 +23,22 @@ jobs:
             - name: Run tests
               run: npm test -- --passWithNoTests
 
-    tag-and-package:
-        needs: build-and-test
+    incrementar-tag:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+            - name: Verificar Tags
+              run: |
+                  git fetch --tags  # Certifica-se de buscar todas as tags
 
-            - name: Get latest tag
-              id: get_latest_tag
+            - name: Testar Comando Git
+              run: |
+                  git tag  # Exibe todas as tags para verificação
+
+            - name: Depurar Saída do Git
+              run: |
+                  git describe --abbrev=0 --tags || echo "Falha ao descrever tags"
+
+            - name: Incrementar Tag
               run: |
                   current_tag=$(git describe --abbrev=0 --tags)  # Obtém a última tag
                   major=$(echo $current_tag | cut -d. -f1 | sed 's/v//')  # Extrai a parte principal da versão
@@ -46,11 +53,11 @@ jobs:
 
                   echo "::set-output name=new_tag::$new_tag"
 
-            - name: Create and push tag
-              if: success()
+            - name: Criar e Empurrar Nova Tag
+              if: ${{ github.event_name == 'push' && github.ref == 'refs/tags/v*' }}
               run: |
-                  git tag ${{ steps.get_latest_tag.outputs.tag }}
-                  git push origin ${{ steps.get_latest_tag.outputs.tag }} --quiet --follow-tags
+                  git tag ${{ steps.incrementar_tag.outputs.new_tag }}
+                  git push origin ${{ steps.incrementar_tag.outputs.new_tag }}
 
             - name: Build and Publish Package
               run: |
