@@ -29,14 +29,14 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
-                      const { github, context } = require('@actions/github');
+                      const { app, context } = require('@actions/github');
 
                       const tag = process.env.INPUT_TAG;
                       const owner = context.repo.owner;
                       const repo = context.repo.repo;
                       const sha = context.sha;
 
-                      await github.git.createRef({
+                      await app.git.createRef({
                         owner,
                         repo,
                         ref: `refs/tags/${tag}`,
