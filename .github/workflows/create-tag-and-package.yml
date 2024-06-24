@@ -34,18 +34,20 @@ jobs:
               id: get_latest_tag
               run: |
                   latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+                  # Extract major, minor, and patch numbers from the latest tag
                   major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
                   minor=$(echo "$latest_tag" | cut -d. -f2)
                   patch=$(echo "$latest_tag" | cut -d. -f3 | sed 's/v//')
 
+                  # If patch is empty (e.g., if latest_tag is 'v1.0'), set it to 0
                   if [ -z "$patch" ]; then
                     patch=0
                   fi
 
+                  # Increment patch number for the new tag
                   new_patch=$((patch + 1))
                   new_tag="v${major}.${minor}.${new_patch}"
                   echo "::set-output name=tag::$new_tag"
-
             - name: Create and push tag
               if: success()
               run: |
