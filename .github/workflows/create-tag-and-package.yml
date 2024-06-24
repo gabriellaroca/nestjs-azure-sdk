@@ -33,21 +33,19 @@ jobs:
             - name: Get latest tag
               id: get_latest_tag
               run: |
-                  latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-                  # Extract major, minor, and patch numbers from the latest tag
-                  major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
-                  minor=$(echo "$latest_tag" | cut -d. -f2)
-                  patch=$(echo "$latest_tag" | cut -d. -f3 | sed 's/v//')
+                  current_tag=$(git describe --abbrev=0 --tags)  # Obtém a última tag
+                  major=$(echo $current_tag | cut -d. -f1 | sed 's/v//')  # Extrai a parte principal da versão
+                  minor=$(echo $current_tag | cut -d. -f2)  # Extrai a parte secundária da versão
+                  patch=$(echo $current_tag | cut -d. -f3 | sed 's/v//')  # Extrai a parte de revisão da versão
 
-                  # If patch is empty (e.g., if latest_tag is 'v1.0'), set it to 0
-                  if [ -z "$patch" ]; then
-                    patch=0
-                  fi
+                  # Incrementa o patch
+                  next_patch=$((patch + 1))
 
-                  # Increment patch number for the new tag
-                  new_patch=$((patch + 1))
-                  new_tag="v${major}.${minor}.${new_patch}"
-                  echo "::set-output name=tag::$new_tag"
+                  # Cria a nova tag
+                  new_tag="v$major.$minor.$next_patch"
+
+                  echo "::set-output name=new_tag::$new_tag"
+
             - name: Create and push tag
               if: success()
               run: |
