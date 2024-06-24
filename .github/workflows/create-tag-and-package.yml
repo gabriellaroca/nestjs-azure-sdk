@@ -34,9 +34,6 @@ jobs:
               id: get_latest_tag
               run: |
                   latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-                  if [ -z "$latest_tag" ]; then
-                    new_tag="v1.0.0"
-                  else
                     major=$(echo "$latest_tag" | cut -d. -f1 | sed 's/v//')
                     minor=$(echo "$latest_tag" | cut -d. -f2)
                     patch=$(echo "$latest_tag" | cut -d. -f3)
