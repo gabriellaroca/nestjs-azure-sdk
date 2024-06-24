@@ -1,7 +1,7 @@
 import { ServiceBusClient, ServiceBusReceivedMessage, ServiceBusReceiver, ServiceBusSender } from '@azure/service-bus';
 import { Injectable, Logger } from '@nestjs/common';
 import { ServiceBusClientService } from '../client/client.service';
-import { CallbackProcessMessageFunction, QueueInterface } from '../type/queue';
+import { CallbackProcessMessageFunction, InputMessage, QueueInterface } from '../type/queue';
 
 /**
  * Implementation of QueueInterface for handling messages using Azure Service Bus.
@@ -26,7 +26,7 @@ export class ServiceBusQueueService implements QueueInterface {
 	 * @param queueName The name of the queue to send the message to.
 	 * @returns Promise<void>
 	 */
-	async sendMessage(message: string, queueName: string): Promise<void> {
+	async sendMessage(queueName: string, message: InputMessage): Promise<void> {
 		const sender = this.createSender(queueName);
 		await sender.sendMessages({ body: message });
 	}
@@ -43,20 +43,12 @@ export class ServiceBusQueueService implements QueueInterface {
 		receiver.subscribe(
 			{
 				processMessage: async (message: ServiceBusReceivedMessage) => {
-					try {
-						const response = await processor(message.body);
-						if (!response.isSuccessful && response.error) {
-							await this.deadLetterMessage(receiver, message, response.error);
-						} else {
-							await receiver.completeMessage(message);
-						}
-					} catch (error) {
-						Logger.error(`Error processing message: ${error.message}`, error.stack, ServiceBusQueueService.name);
-						await receiver.abandonMessage(message);
-					}
+					await processor(message.body);
+					await receiver.completeMessage(message);
 				},
 				processError: async (error) => {
 					Logger.error(`Error from Service Bus subscription: ${error}`, error, ServiceBusQueueService.name);
+					throw error;
 				},
 			},
 			{ maxConcurrentCalls: 1, autoCompleteMessages: false },
