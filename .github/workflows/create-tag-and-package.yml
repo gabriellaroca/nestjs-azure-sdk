@@ -33,7 +33,7 @@ jobs:
             - name: Obter Última Tag
               id: obter_tag
               run: |
-                  latest_tag=$(git describe --abbrev=0)
+                  latest_tag=$(git describe --abbrev=0 --tags)
                   echo "Última tag encontrada: $latest_tag"
                   export LATEST_TAG=$latest_tag
 
