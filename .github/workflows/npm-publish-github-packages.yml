@@ -20,6 +20,7 @@ jobs:
                   # Defaults to the user or organization that owns the workflow file
                   scope: '@ltz-labs'
             - run: npm ci
+            - run: npm version patch
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
