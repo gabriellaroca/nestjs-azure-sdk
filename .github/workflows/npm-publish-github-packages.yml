@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - master
+
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -11,20 +12,46 @@ jobs:
             contents: read
             packages: write
         steps:
-            - uses: actions/checkout@v4
-            # Setup .npmrc file to publish to GitHub Packages
-            - uses: actions/setup-node@v4
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
               with:
-                  node-version: '20.x'
-                  registry-url: 'https://npm.pkg.github.com'
-                  # Defaults to the user or organization that owns the workflow file
-                  scope: '@ltz-labs'
-            - run: npm ci
+                  node-version: '14.x'
+
+            - name: Install dependencies
+              run: npm ci
+
             - name: Configure Git
               run: |
                   git config --global user.email "operacao@ltzcapital.com.br"
                   git config --global user.name "LTZ-CAPITAL"
-            - run: npm version patch
-            - run: npm publish
+
+            - name: Determine version increment
+              id: version
+              run: |
+                  PREVIOUS_VERSION=$(npm show your-package-name version)
+
+                  BRANCH_NAME=$(jq -r '.pull_request.head.ref' "$GITHUB_EVENT_PATH")
+                  if [[ $BRANCH_NAME == *"release"* ]]; then
+                    echo "major"
+                  elif [[ $BRANCH_NAME == *"feature"* ]]; then
+                    if [[ "$PREVIOUS_VERSION" == "10.0.0" ]]; then
+                      echo "minor"
+                    else
+                      echo "patch"
+                    fi
+                  else
+                    echo "patch"
+                  fi
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+            - name: Bump version
+              run: npm version ${{ steps.version.outputs.version }}
+
+            - name: Publish to GitHub Packages
+              run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
