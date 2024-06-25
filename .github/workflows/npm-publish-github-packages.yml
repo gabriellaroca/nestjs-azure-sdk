@@ -31,9 +31,6 @@ jobs:
 
             - run: npm install
 
-            - name: Set NODE_AUTH_TOKEN for npm publish
-              run: echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-
             - run: npm publish
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
