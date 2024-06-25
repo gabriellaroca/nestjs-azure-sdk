@@ -43,8 +43,7 @@ jobs:
 
             - name: Update package.json
               run: |
-                  next_version=${{ steps.version.outputs.next_version }}
-                  npm version "$next_version"
+                  npm version ${{ steps.version.outputs.next_version }}
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
