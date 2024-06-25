@@ -7,6 +7,10 @@
 	"publishConfig": {
 		"@ltz-labs:registry": "https://npm.pkg.github.com"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Ltz-Labs/azure.git"
+	},
 	"scripts": {
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
