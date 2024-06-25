@@ -1,12 +1,18 @@
 {
 	"name": "@ltz-labs/azure",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"publishConfig": {
 		"@ltz-labs:registry": "https://npm.pkg.github.com"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ltz-labs/azure.git"
+	},
+	"exports": {
+		"./queue-decorator": "./dist/service-bus/src/queue/queue.decorator.js",
+		"./queue-service": "./dist/service-bus/src/queue/queue.service.js",
+		"./types/client": "./dist/service-bus/src/type/client.js",
+		"./types/queue": "./dist/service-bus/src/type/queue.js"
 	},
 	"scripts": {
 		"build": "nest build",

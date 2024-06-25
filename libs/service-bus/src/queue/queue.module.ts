@@ -36,7 +36,7 @@ export class ServiceBusQueueModule {
 			module: ServiceBusQueueModule,
 			imports: [ServiceBusClientModule.createClient(options)],
 			providers: [ServiceBusQueueService, Queue],
-			exports: [ServiceBusQueueService],
+			exports: [ServiceBusQueueService, Queue],
 		};
 	}
 }
