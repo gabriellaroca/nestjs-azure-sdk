@@ -28,9 +28,6 @@ jobs:
               with:
                   node-version: 20
                   registry-url: https://npm.pkg.github.com/ltz-labs/azure
-            - uses: digitalvisioncz/npmrc-github-action@v1
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  registryUrl: npm.pkg.github.com/ltz-labs/azure
+            - run: echo "_auth = $NPM_AUTH_TOKEN" > ~/.npmrc
             - run: npm ci
             - run: npm publish
