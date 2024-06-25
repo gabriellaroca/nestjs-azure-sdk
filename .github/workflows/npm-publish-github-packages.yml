@@ -12,39 +12,19 @@ jobs:
             packages: write
         steps:
             - uses: actions/checkout@v4
+            # Setup .npmrc file to publish to GitHub Packages
             - uses: actions/setup-node@v4
               with:
                   node-version: '20.x'
                   registry-url: 'https://npm.pkg.github.com'
+                  # Defaults to the user or organization that owns the workflow file
                   scope: '@ltz-labs'
             - run: npm ci
             - name: Configure Git
               run: |
                   git config --global user.email "operacao@ltzcapital.com.br"
                   git config --global user.name "LTZ-CAPITAL"
-
-            - name: Determine next version
-              id: version
-              run: |
-                  git fetch --tags
-                  current_version=$(git describe --tags --abbrev=0)
-                  semver_parts=($(echo "$current_version" | tr '.' ' '))
-                  major=${semver_parts[0]}
-                  minor=${semver_parts[1]}
-                  patch=${semver_parts[2]}
-
-                  if [[ "$patch" == "9" ]]; then
-                    next_version="$major.$(($minor + 1)).0"
-                  elif [[ "$minor" == "9" ]]; then
-                    next_version="$(($major + 1)).0.0"
-                  else
-                    next_version=$(npm version patch)
-                  fi
-                  echo "::set-output name=next_version::$next_version"
-
-            - name: Update package.json
-              run: |
-                  npm version ${{ steps.version.outputs.next_version }}
+            - run: npm version patch
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
