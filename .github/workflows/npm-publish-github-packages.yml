@@ -26,7 +26,8 @@ jobs:
             - name: Determine next version
               id: version
               run: |
-                  current_version=$(node -pe "require('./package.json').version")
+                  git fetch --tags
+                  current_version=$(git describe --tags --abbrev=0)
                   semver_parts=($(echo "$current_version" | tr '.' ' '))
                   major=${semver_parts[0]}
                   minor=${semver_parts[1]}
