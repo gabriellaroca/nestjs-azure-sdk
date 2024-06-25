@@ -20,6 +20,10 @@ jobs:
                   # Defaults to the user or organization that owns the workflow file
                   scope: '@ltz-labs'
             - run: npm ci
+            - name: Configure Git
+              run: |
+                  git config --global user.email "$(git config --get user.email)"
+                  git config --global user.name "$(git config --get user.name)"
             - run: npm version patch
             - run: npm publish
               env:
