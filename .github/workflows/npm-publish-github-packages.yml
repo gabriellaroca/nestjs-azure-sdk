@@ -37,14 +37,14 @@ jobs:
                   elif [[ "$minor" == "9" ]]; then
                     next_version="$(($major + 1)).0.0"
                   else
-                    next_version=$(npm version patch --no-git-tag-version)
+                    next_version=$(npm version patch)
                   fi
                   echo "::set-output name=next_version::$next_version"
 
             - name: Update package.json
               run: |
                   next_version=${{ steps.version.outputs.next_version }}
-                  npm --no-git-tag-version version "$next_version"
+                  npm version "$next_version"
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
