@@ -66,7 +66,7 @@ export class OutputMessage {
 	/**
 	 * Metadados adicionais associados à mensagem.
 	 */
-	metadata: MessageMetadata[];
+	metadata: MessageMetadata;
 }
 
 /**
@@ -91,14 +91,7 @@ export type InputMessage = {
  * Tipo que define a estrutura de metadados associados a uma mensagem.
  */
 export type MessageMetadata = {
-	/**
-	 * O nome do metadado.
-	 */
-	name: string;
-	/**
-	 * O valor do metadado.
-	 */
-	value: any;
+	[key: string]: number | boolean | string | Date | null;
 };
 
 /**

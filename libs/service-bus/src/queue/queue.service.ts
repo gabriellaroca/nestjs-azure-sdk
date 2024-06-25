@@ -1,7 +1,7 @@
 import { ServiceBusClient, ServiceBusReceivedMessage, ServiceBusReceiver, ServiceBusSender } from '@azure/service-bus';
 import { Injectable, Logger } from '@nestjs/common';
 import { ServiceBusClientService } from '../client/client.service';
-import { CallbackProcessMessageFunction, InputMessage, QueueInterface } from '../type/queue';
+import { CallbackProcessMessageFunction, InputMessage, OutputMessage, QueueInterface } from '../type/queue';
 
 /**
  * Implementation of QueueInterface for handling messages using Azure Service Bus.
@@ -28,7 +28,7 @@ export class ServiceBusQueueService implements QueueInterface {
 	 */
 	async sendMessage(queueName: string, message: InputMessage): Promise<void> {
 		const sender = this.createSender(queueName);
-		await sender.sendMessages({ body: message });
+		await sender.sendMessages({ body: message.body, messageId: message.messageId, applicationProperties: message.metadata });
 	}
 
 	/**
@@ -43,7 +43,12 @@ export class ServiceBusQueueService implements QueueInterface {
 		receiver.subscribe(
 			{
 				processMessage: async (message: ServiceBusReceivedMessage) => {
-					await processor(message.body);
+					let outputMessage = {
+						messageId: message.messageId,
+						body: message.body,
+						metadata: message.applicationProperties,
+					} as OutputMessage;
+					await processor(outputMessage);
 					await receiver.completeMessage(message);
 				},
 				processError: async (error) => {
