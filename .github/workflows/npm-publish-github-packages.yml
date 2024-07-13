@@ -35,16 +35,10 @@ jobs:
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
-          major_regexp_flags: ""
           minor_pattern: "(MINOR)"
-          minor_regexp_flags: ""
           version_format: "${major}.${minor}.${patch}-${increment}"
-          change_path: "src/"
           namespace: azure
           bump_each_commit: true
-          search_commit_body: false
-          enable_prerelease_mode: true
-          debug: false
 
       - run: npm version ${{ steps.versioning.outputs.version_tag }}
 
