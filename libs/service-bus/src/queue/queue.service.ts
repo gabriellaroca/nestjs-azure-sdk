@@ -43,7 +43,7 @@ export class ServiceBusQueueService implements QueueInterface {
 		receiver.subscribe(
 			{
 				processMessage: async (message: ServiceBusReceivedMessage) => {
-					let outputMessage = {
+					const outputMessage = {
 						messageId: message.messageId,
 						body: message.body,
 						metadata: message.applicationProperties,

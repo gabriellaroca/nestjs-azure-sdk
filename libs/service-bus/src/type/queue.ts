@@ -101,7 +101,7 @@ export type MessageMetadata = {
 /**
  * Tipo de função de callback para processar mensagens de saída.
  */
-export type CallbackProcessMessageFunction = (message: OutputMessage) => any;
+export type CallbackProcessMessageFunction = (message: OutputMessage) => void;
 
 /**
  * Interface que define a estrutura básica de uma fila.

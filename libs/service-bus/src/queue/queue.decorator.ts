@@ -102,18 +102,21 @@ export const InjectQueue = (queueName: string): ParameterDecorator => {
  * This decorator validates that the method signature matches the expected message processing format.
  */
 export function OnProcess(): MethodDecorator {
-	return (_: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-		const originalMethod = descriptor.value;
+    return (_: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+        const originalMethod = descriptor.value;
 
-		// Override the original method to enforce the parameter type checking
-		descriptor.value = function (message: OutputMessage) {
-			if (message instanceof OutputMessage) {
-				return originalMethod.apply(this, arguments);
-			} else {
-				throw new Error(`Method ${String(propertyKey)} must have parameter of type OutputMessage`);
-			}
-		};
+        // Override the original method to enforce the parameter type checking
+        descriptor.value = function (this: unknown, message: OutputMessage) {
+            if (message instanceof OutputMessage) {
+                return originalMethod.apply(this, [message]);
+            } else {
+                throw new Error(`Method ${String(propertyKey)} must have parameter of type OutputMessage`);
+            }
+        };
 
-		return descriptor;
-	};
+        return descriptor;
+    };
 }
+
+
+
