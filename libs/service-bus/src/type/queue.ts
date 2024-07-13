@@ -67,8 +67,8 @@ export class OutputMessage {
 	 * Metadados adicionais associados à mensagem.
 	 */
 	metadata?: {
-        [key: string]: number | boolean | string | Date | null;
-    };;
+		[key: string]: number | boolean | string | Date | null;
+	};
 }
 
 /**
@@ -87,8 +87,8 @@ export type InputMessage = {
 	 * Opcional: Metadados associados à mensagem.
 	 */
 	metadata?: {
-        [key: string]: number | boolean | string | Date | null;
-    };
+		[key: string]: number | boolean | string | Date | null;
+	};
 };
 
 /**

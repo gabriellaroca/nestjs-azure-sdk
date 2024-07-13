@@ -1,61 +1,61 @@
 name: Publish package to GitHub Packages
 
 on:
-  push:
-    branches:
-      - master
+    push:
+        branches:
+            - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'  
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@ltz-labs'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20.x'
+                  registry-url: 'https://npm.pkg.github.com'
+                  scope: '@ltz-labs'
 
-      - name: Run ESLint
-        run: npm run lint
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Run tests
-        run: npm test -- --passWithNoTests
+            - name: Run ESLint
+              run: npm run lint
 
-      - name: Build
-        run: npm run build
+            - name: Run tests
+              run: npm test -- --passWithNoTests
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "operacao@ltzcapital.com.br"
-          git config --global user.name "LTZ-CAPITAL"
+            - name: Build
+              run: npm run build
 
-      - name: Semantic versioning
-        id: versioning
-        uses: paulhatch/semantic-version@v5.3.0
-        with:
-          tag_prefix: "v"
-          bump_each_commit: true
-          major_pattern: "[RELEASE]"
-          minor_pattern: "[FEATURE]"
-          version_format: "${major}.${minor}.${patch}"
+            - name: Configure Git
+              run: |
+                  git config --global user.email "operacao@ltzcapital.com.br"
+                  git config --global user.name "LTZ-CAPITAL"
 
-      - name: Update version
-        run: npm version ${{ steps.versioning.outputs.version }}
+            - name: Semantic versioning
+              id: versioning
+              uses: paulhatch/semantic-version@v5.3.0
+              with:
+                  tag_prefix: 'v'
+                  bump_each_commit: true
+                  major_pattern: '[RELEASE]'
+                  minor_pattern: '[FEATURE]'
+                  version_format: '${major}.${minor}.${patch}'
 
-      - name: Publish to GitHub Packages
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+            - name: Update version
+              run: npm version ${{ steps.versioning.outputs.version }}
+
+            - name: Publish to GitHub Packages
+              run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
