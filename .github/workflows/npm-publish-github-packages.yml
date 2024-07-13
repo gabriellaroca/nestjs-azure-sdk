@@ -38,7 +38,7 @@ jobs:
           major_regexp_flags: ""
           minor_pattern: "(MINOR)"
           minor_regexp_flags: ""
-          version_format: "${{major}}.${{minor}}.${{patch}}-${{increment}}"
+          version_format: "${major}.${minor}.${patch}-${increment}"
           change_path: "src/"
           namespace: azure
           bump_each_commit: true
