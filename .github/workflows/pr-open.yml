@@ -65,8 +65,8 @@ jobs:
               continue-on-error: false
 
     prettier:
+        needs: install-dependencies
         runs-on: ubuntu-latest
-        needs: lint
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -86,8 +86,8 @@ jobs:
               continue-on-error: false
 
     audit:
+        needs: install-dependencies
         runs-on: ubuntu-latest
-        needs: prettier
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -107,8 +107,8 @@ jobs:
               continue-on-error: false
 
     test:
+        needs: install-dependencies
         runs-on: ubuntu-latest
-        needs: audit
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
