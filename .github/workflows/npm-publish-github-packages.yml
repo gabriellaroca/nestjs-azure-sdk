@@ -49,7 +49,7 @@ jobs:
           version_format: "${major}.${minor}.${patch}-${increment}"
 
       - name: Update version
-        run: npm version ${{ steps.versioning.outputs.version_tag }}
+        run: npm version ${{ steps.versioning.outputs.version }}
 
       - name: Publish to GitHub Packages
         run: npm publish
