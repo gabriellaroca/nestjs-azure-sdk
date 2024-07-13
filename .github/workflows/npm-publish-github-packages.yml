@@ -23,10 +23,22 @@ jobs:
               run: |
                   git config --global user.email "operacao@ltzcapital.com.br"
                   git config --global user.name "LTZ-CAPITAL"
-            - name: Get Versioning Data
-              id: versioning
-              uses: Soumeh/Auto-Versioning@main
-            - run: npm version ${{ steps.versioning.outputs.tag }}
+            - uses: paulhatch/semantic-version@v5.3.0
+                id: versioning
+                with:
+                    tag_prefix: "v"
+                    major_pattern: "(MAJOR)"
+                    major_regexp_flags: ""
+                    minor_pattern: "(MINOR)"
+                    minor_regexp_flags: ""
+                    version_format: "${major}.${minor}.${patch}-${increment}"
+                    change_path: "src/"
+                    namespace: azure
+                    bump_each_commit: true
+                    search_commit_body: false
+                    enable_prerelease_mode: true
+                    debug: false
+            - run: npm version ${{ steps.versioning.version_tag }}
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
