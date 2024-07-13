@@ -1,44 +1,53 @@
 name: Publish package to GitHub Packages
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: '20.x'
-                  registry-url: 'https://npm.pkg.github.com'
-                  scope: '@ltz-labs'
-            - run: npm ci
-            - run: npm run build
-            - name: Configure Git
-              run: |
-                  git config --global user.email "operacao@ltzcapital.com.br"
-                  git config --global user.name "LTZ-CAPITAL"
-            - uses: paulhatch/semantic-version@v5.3.0
-            id: versioning
-                with:
-                    tag_prefix: "v"
-                    major_pattern: "(MAJOR)"
-                    major_regexp_flags: ""
-                    minor_pattern: "(MINOR)"
-                    minor_regexp_flags: ""
-                    version_format: "${major}.${minor}.${patch}-${increment}"
-                    change_path: "src/"
-                    namespace: azure
-                    bump_each_commit: true
-                    search_commit_body: false
-                    enable_prerelease_mode: true
-                    debug: false
-            - run: npm version ${{ steps.versioning.version_tag }}
-            - run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@ltz-labs'
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "operacao@ltzcapital.com.br"
+          git config --global user.name "LTZ-CAPITAL"
+
+      - uses: paulhatch/semantic-version@v5.3.0
+        id: versioning
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          major_regexp_flags: ""
+          minor_pattern: "(MINOR)"
+          minor_regexp_flags: ""
+          version_format: "${{major}}.${{minor}}.${{patch}}-${{increment}}"
+          change_path: "src/"
+          namespace: azure
+          bump_each_commit: true
+          search_commit_body: false
+          enable_prerelease_mode: true
+          debug: false
+
+      - run: npm version ${{ steps.versioning.outputs.version_tag }}
+
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
