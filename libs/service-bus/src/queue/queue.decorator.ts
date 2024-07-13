@@ -55,7 +55,7 @@ export class Queue implements IQueue {
 			const outputMessage: OutputMessage = {
 				messageId: message.messageId || 'default-id',
 				body: message.body || '',
-				metadata: message.metadata || [],
+				metadata: message.metadata,
 			};
 			this.callbackFunction(outputMessage);
 		} else {
