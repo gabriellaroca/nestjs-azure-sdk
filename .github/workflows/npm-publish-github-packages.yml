@@ -18,6 +18,7 @@ jobs:
                   registry-url: 'https://npm.pkg.github.com'
                   scope: '@ltz-labs'
             - run: npm ci
+            - run: npm run build
             - name: Configure Git
               run: |
                   git config --global user.email "operacao@ltzcapital.com.br"
