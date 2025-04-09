@@ -4,7 +4,7 @@ import { ServiceBusClientService } from './client.service';
 
 /**
  * Module for integrating with Azure Service Bus.
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  */
 @Module({})
 export class ServiceBusClientModule {

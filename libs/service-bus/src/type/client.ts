@@ -1,7 +1,7 @@
 /**
  * Represents a connection string used for authentication with Azure Service Bus.
  *
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  */
 export class ConnectionString {
 	/**
@@ -13,7 +13,7 @@ export class ConnectionString {
 /**
  * Represents identity credentials used for authentication with Azure Service Bus.
  *
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  */
 export class IdentityCredential {
 	/**
@@ -26,7 +26,7 @@ export class IdentityCredential {
  * Interface defining the client options to connect to Azure Service Bus.
  * Allows providing either a ConnectionString or IdentityCredential for authentication.
  *
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  */
 export interface ClientOptions {
 	/**

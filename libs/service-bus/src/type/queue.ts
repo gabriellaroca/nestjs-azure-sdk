@@ -1,6 +1,6 @@
 /**
  * Interface que define os métodos esperados para uma fila de mensagens.
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  * @example
  * const queue: QueueInterface = {
  *   sendMessage: (queueName, message) => {

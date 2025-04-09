@@ -62,7 +62,7 @@ class IdentityCredentialServiceBusClientFactory implements ServiceBusClientFacto
  * Factory selector for choosing the appropriate ServiceBusClientFactory based on client options.
  * @abstract
  * @class
- * @package ltz-labs/azure/service-bus
+ * @package gabriellaroca/azure/service-bus
  */
 export abstract class ServiceBusClientFactorySelector {
 	/**
