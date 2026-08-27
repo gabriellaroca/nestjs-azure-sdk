@@ -1,6 +1,6 @@
 {
 	"name": "nestjs-azure-sdk",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Integração simples e idiomática entre NestJS e Azure Service Bus, Blob Storage e Queue Storage.",
 	"author": {
 		"name": "Gabriel Laroca Barbosa",
