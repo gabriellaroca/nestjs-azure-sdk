@@ -2,6 +2,13 @@
 
 Todas as alterações relevantes deste projeto serão documentadas aqui.
 
+## [2.0.1](https://github.com/gabriellaroca/nestjs-azure-sdk/compare/v2.0.0...v2.0.1) (2026-08-27)
+
+
+### Refactoring
+
+* add a new version and new funcionality ([71d484b](https://github.com/gabriellaroca/nestjs-azure-sdk/commit/71d484b432773ed194009bb328649d6a085ef31f))
+
 ## 2.0.0 (2026-08-27)
 
 ### Features
